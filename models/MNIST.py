@@ -6,6 +6,7 @@ from torch.utils.data import DataLoader
 import torchvision
 from torchvision import transforms
 from torchsummary import summary
+import os
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -100,7 +101,7 @@ def train_MNIST(model, epochs, criterion, optimizer, save_path = None):
         val_loss_sum = 0
         val_acc_num = 0
         for val_step, (X_val, y_val) in enumerate(testloader):
-            X_val, y_val = X_val.cuda(), y_val.cuda()
+            X_val, y_val = X_val.to(device), y_val.to(device)
 
             output, val_loss, val_acc = test(model, X_val, y_val, criterion)
             val_loss_sum += val_loss
@@ -109,13 +110,18 @@ def train_MNIST(model, epochs, criterion, optimizer, save_path = None):
         if epoch % 1 == 0:
             print("="*50)
             print("Epoch:{}, loss:{}, acc:{}, val_loss:{}, val_acc:{}".format(epoch,
-                                                                              loss_sum / len(trainloader.dataset),
-                                                                              acc_num / len(trainloader.dataset),
-                                                                              val_loss_sum / len(testloader.dataset),
-                                                                              val_acc_num / len(testloader.dataset)
+                                                                              # loss_sum / len(trainloader.dataset),
+                                                                              # acc_num / len(trainloader.dataset),
+                                                                              # val_loss_sum / len(testloader.dataset),
+                                                                              # val_acc_num / len(testloader.dataset)
+                                                                              torch.true_divide(loss_sum, len(trainloader.dataset)),
+                                                                              torch.true_divide(acc_num, len(trainloader.dataset)),
+                                                                              torch.true_divide(val_loss_sum, len(testloader.dataset)),
+                                                                              torch.true_divide(val_acc_num, len(testloader.dataset))
                                                                               ))
             print("="*50)
-
+    if not os.path.exists('../saved_models/'):
+        os.makedirs('../saved_models/')
     torch.save(model.state_dict(), save_path)
 
 
