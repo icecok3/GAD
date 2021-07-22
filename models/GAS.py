@@ -80,7 +80,7 @@ if __name__ == "__main__":
         acc = torch.true_divide(acc_tol, len(testloader.dataset))
         print(acc.item())
 
-        res_plot(x_adv.squeeze()[:9], y[:9].cpu().numpy(), output[:9].cpu().detach().numpy(), 3, 3, "eps:{}   acc:{}".format(eps, acc))
+        res_plot(x_adv.squeeze()[:9].cpu().numpy(), y[:9].cpu().numpy(), output[:9].cpu().detach().numpy(), 3, 3, "eps:{}   acc:{}".format(eps, acc))
 
 
 
